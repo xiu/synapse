@@ -18,6 +18,7 @@ import gc
 import logging
 import os
 import platform
+import sys
 import threading
 import time
 from typing import Callable, Dict, Iterable, Optional, Tuple, Union
@@ -556,6 +557,10 @@ def runUntilCurrentTimer(func):
     return f
 
 
+def gc_callback(phase, info):
+    print("GC: %s gen %s" % (phase, info["generation"]), file=sys.__stderr__)
+
+
 try:
     # Ensure the reactor has all the attributes we expect
     reactor.runUntilCurrent
@@ -570,6 +575,8 @@ try:
     # about time spent doing GC,
     if not running_on_pypy:
         gc.disable()
+        gc.callbacks.append(gc_callback)
+
 except AttributeError:
     pass
 
