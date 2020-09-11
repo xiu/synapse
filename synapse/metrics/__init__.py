@@ -558,7 +558,9 @@ def runUntilCurrentTimer(func):
 
 
 def gc_callback(phase, info):
-    print("GC: %s gen %s" % (phase, info["generation"]), file=sys.__stderr__)
+    print(
+        "GC: %s gen %s" % (phase, info["generation"]), file=sys.__stderr__, flush=True
+    )
 
 
 try:
