@@ -665,10 +665,10 @@ class FederationServer(FederationBase):
         if not user_id:
             return None
         userinfo = {"sub": user_id}
-        user_email = self.store.get_user_email(user_id)
+        user_email = await self.store.get_user_email(user_id)
         if user_email:
             userinfo["email"] = user_email
-        user_name = self.store.get_user_name(user_id)
+        user_name = await self.store.get_user_name(user_id)
         if user_name:
             userinfo["name"] = user_name
         return userinfo
