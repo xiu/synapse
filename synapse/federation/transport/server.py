@@ -708,6 +708,8 @@ class OpenIdUserInfo(BaseFederationServlet):
 
     {
         "sub": "@userpart:example.org",
+        "email": "userpart@example.org",
+        "name": "Example User"
     }
     """
 
@@ -723,9 +725,9 @@ class OpenIdUserInfo(BaseFederationServlet):
                 {"errcode": "M_MISSING_TOKEN", "error": "Access Token required"},
             )
 
-        user_id = await self.handler.on_openid_userinfo(token.decode("ascii"))
+        userinfo = await self.handler.on_openid_userinfo(token.decode("ascii"))
 
-        if user_id is None:
+        if userinfo is None:
             return (
                 401,
                 {
@@ -734,7 +736,7 @@ class OpenIdUserInfo(BaseFederationServlet):
                 },
             )
 
-        return 200, {"sub": user_id}
+        return 200, userinfo
 
 
 class PublicRoomList(BaseFederationServlet):

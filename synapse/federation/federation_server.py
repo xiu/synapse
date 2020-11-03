@@ -659,9 +659,19 @@ class FederationServer(FederationBase):
         return {"events": [ev.get_pdu_json(time_now) for ev in missing_events]}
 
     @log_function
-    async def on_openid_userinfo(self, token: str) -> Optional[str]:
+    async def on_openid_userinfo(self, token: str) -> Optional[Dict]:
         ts_now_ms = self._clock.time_msec()
-        return await self.store.get_user_id_for_open_id_token(token, ts_now_ms)
+        user_id = await self.store.get_user_id_for_open_id_token(token, ts_now_ms)
+        if not user_id:
+            return None
+        userinfo = {"sub": user_id}
+        user_email = self.store.get_user_email(user_id)
+        if user_email:
+            userinfo["email"] = user_email
+        user_name = self.store.get_user_name(user_id)
+        if user_name:
+            userinfo["name"] = user_name
+        return userinfo
 
     def _transaction_from_pdus(self, pdu_list: List[EventBase]) -> Transaction:
         """Returns a new Transaction containing the given PDUs suitable for

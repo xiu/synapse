@@ -17,6 +17,15 @@ class OpenIdStore(SQLBaseStore):
             desc="insert_open_id_token",
         )
 
+    async def get_user_email(self, user_id: str) -> Optional[str]:
+        return await self.db_pool.simple_select_one_onecol(
+            table="user_threepids",
+            keyvalues={"user_id": user_id, "medium": "email"},
+            retcol="address",
+            allow_none=True,
+            desc="simple_select_one_onecol",
+        )
+
     async def get_user_id_for_open_id_token(
         self, token: str, ts_now_ms: int
     ) -> Optional[str]:
@@ -36,4 +45,13 @@ class OpenIdStore(SQLBaseStore):
 
         return await self.db_pool.runInteraction(
             "get_user_id_for_token", get_user_id_for_token_txn
+        )
+
+    async def get_user_name(self, user_id: str) -> Optional[str]:
+        return await self.db_pool.simple_select_one_onecol(
+            table="profiles",
+            keyvalues={"user_id": user_id},
+            retcol="displayname",
+            allow_none=True,
+            desc="simple_select_one_onecol",
         )
