@@ -1,6 +1,8 @@
 from typing import Optional
 
+from synapse.api.errors import SynapseError
 from synapse.storage._base import SQLBaseStore
+from synapse.types import get_localpart_from_id
 
 
 class OpenIdStore(SQLBaseStore):
@@ -48,9 +50,13 @@ class OpenIdStore(SQLBaseStore):
         )
 
     async def get_user_name(self, user_id: str) -> Optional[str]:
+        try:
+            localpart = get_localpart_from_id(user_id)
+        except SynapseError:
+            return None
         return await self.db_pool.simple_select_one_onecol(
             table="profiles",
-            keyvalues={"user_id": user_id},
+            keyvalues={"user_id": localpart},
             retcol="displayname",
             allow_none=True,
             desc="simple_select_one_onecol",
