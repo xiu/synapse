@@ -267,10 +267,6 @@ def make_request(
     return req, channel
 
 
-def render(request, resource, clock):
-    pass
-
-
 @implementer(IReactorPluggableNameResolver)
 class ThreadedMemoryReactorClock(MemoryReactorClock):
     """
