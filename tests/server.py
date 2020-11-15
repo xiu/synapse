@@ -19,7 +19,6 @@ from twisted.internet.interfaces import (
 )
 from twisted.python.failure import Failure
 from twisted.test.proto_helpers import AccumulatingProtocol, MemoryReactorClock
-from twisted.web.http import unquote
 from twisted.web.http_headers import Headers
 from twisted.web.resource import IResource
 from twisted.web.server import Site
